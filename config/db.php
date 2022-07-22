@@ -2,7 +2,7 @@
 
 // Configuration BDD
 define('DB_HOST', 'localhost');
-define('DB_NAME', 'views');
+define('DB_NAME', 'reviews');
 define('DB_USER', 'root');
 define('DB_PASSWORD', '');
 

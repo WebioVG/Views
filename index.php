@@ -7,61 +7,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 
     <title>Liste des avis</title>
 </head>
 
-<body class="w-[1000px] mx-auto">
+<body class="w-[1000px] mx-auto font-['Nunito']">
 
     <?php
 
+        require 'config/db.php';
         require 'config/helpers.php';
     
         $name = sanitize($_POST['name'] ?? null);
-        $message = sanitize($_POST['message'] ?? null);
+        $review = sanitize($_POST['review'] ?? null);
         $note = sanitize($_POST['note'] ?? null);
         
         $errors = [];
         $success = false;
-
-        $views = [
-            [
-                'name' => 'Kevin',
-                'message' => 'Mon premier commentaire',
-                'note' => '3',
-                'created_at' => date('Y-m-d H:i:s', strtotime('+2 hours'))
-            ],
-            [
-                'name' => 'Kevin',
-                'message' => 'Mon second commentaire',
-                'note' => '3',
-                'created_at' => date('Y-m-d H:i:s', strtotime('+2 hours'))
-            ],
-            [
-                'name' => 'Kevin',
-                'message' => 'Mon troisième commentaire',
-                'note' => '1',
-                'created_at' => date('Y-m-d H:i:s', strtotime('+2 hours'))
-            ],
-            [
-                'name' => 'Toto',
-                'message' => 'Lorem ipsum',
-                'note' => '5',
-                'created_at' => date('Y-m-d H:i:s', strtotime('+2 hours'))
-            ],
-            [
-                'name' => 'Titi',
-                'message' => 'Lorem ipsum',
-                'note' => '2',
-                'created_at' => date('Y-m-d H:i:s', strtotime('+2 hours'))
-            ],
-            [
-                'name' => 'Tutu',
-                'message' => 'Lorem ipsum dolor',
-                'note' => '3',
-                'created_at' => date('Y-m-d H:i:s', strtotime('+2 hours'))
-            ],
-        ];
 
         if (isSubmit()) {
             if (strlen($name) === 0) {
@@ -70,8 +33,8 @@
                 $errors['name'] = 'Le nom ne peut excéder 30 caractères.';
             }
             
-            if (strlen($message) > 250) {
-                $errors['name'] = 'Le message ne peut excéder 250 caractères.';
+            if (strlen($review) > 250) {
+                $errors['name'] = 'Le review ne peut excéder 250 caractères.';
             }
             
             if ($note !== '1' && $note !== '2' && $note !== '3' && $note !== '4' && $note !== '5') {
@@ -79,14 +42,16 @@
             }
 
             if (empty($errors)) {
-                array_push($views, [
+                insert('INSERT INTO reviews (name, review, note, created_at) VALUES (:name, :review, :note, :created_at)', [
                     'name' => $name,
-                    'message' => $message,
+                    'review' => $review,
                     'note' => $note,
                     'created_at' => date('Y-m-d H:i:s', strtotime('+2 hours'))
                 ]);
             }
         }
+
+        $views = select('SELECT * FROM reviews') ?? [];
 
         function filterViewsByNote($views, $note) {
             return array_filter($views, function ($v) use ($note) {
@@ -230,8 +195,8 @@
             </div>
             
             <div class="mb-3 w-full">
-                <label class="w-[100px] inline-block text-end mr-4" for="message">Commentaire</label>
-                <textarea class="rounded" placeholder="Votre commentaire" name="message" id="message" cols="30" rows="2"></textarea>
+                <label class="w-[100px] inline-block text-end mr-4" for="review">Commentaire</label>
+                <textarea class="rounded" placeholder="Votre commentaire" name="review" id="review" cols="30" rows="2"></textarea>
             </div>
             
             <div class="mb-3 w-full">
@@ -262,7 +227,7 @@
                     <p class="bg-slate-200 pl-2 py-1"><?= $view['name'] ?></p>
                     <div class="pl-2 pt-2 pb-4">
                         <div><?= $view['note'] ?> / 5</div>
-                        <p><?= $view['message'] ?></p>
+                        <p><?= $view['review'] ?></p>
                     </div>
                     <p class="text-end bg-slate-200 pl-2 py-1 border"><?= dateToFrench($view['created_at'], 'l d F Y \à H\hi') ?></p>
                 </div>
