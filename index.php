@@ -46,8 +46,12 @@
                     'name' => $name,
                     'message' => $message,
                     'note' => $note,
-                    'created_at' => date('Y-m-d H:i:s')
+                    'created_at' => date('Y-m-d H:i:s', strtotime('+2 hours'))
                 ]);
+            }
+
+            function displayCurrentTime($date) {
+                return date('l d F Y \à H\-i', strtotime($date));
             }
         }
     ?>
@@ -68,7 +72,7 @@
         </section>
     <?php } ?>
 
-    <section class="mb-6 border">
+    <section class="mb-6 border rounded">
         <h3 class="mb-4 bg-slate-200 pl-2 py-1">Notre moyenne</h3>
 
         <div class="flex w-full py-4">
@@ -110,58 +114,57 @@
         </div>
     </section>
 
-    <section class="mb-6 border">
+    <section class="mb-6 border rounded">
         <h3 class="mb-4 bg-slate-200 pl-2 py-1">Publier un avis</h3>
 
-        <form class="p-4 text-center" action="" method="post" enctype="multipart/form-data">
-            <div>
-                <label for="name">Nom</label>
-                <input type="text" name="name" id="name">
+        <form class="p-4 w-1/2 mx-auto flex flex-col items-center" action="" method="post" enctype="multipart/form-data">
+            <div class="mb-3 w-full">
+                <label class="w-[100px] inline-block text-end mr-4" for="name">Nom</label>
+                <input class="rounded" placeholder="Votre nom" type="text" name="name" id="name">
             </div>
             
-            <div>
-                <label for="message">Commentaire</label>
-                <textarea name="message" id="message" cols="30" rows="2"></textarea>
+            <div class="mb-3 w-full">
+                <label class="w-[100px] inline-block text-end mr-4" for="message">Commentaire</label>
+                <textarea class="rounded" placeholder="Votre commentaire" name="message" id="message" cols="30" rows="2"></textarea>
             </div>
             
-            <div>
-                <label for="note">1</label>
+            <div class="mb-3 w-full">
+                <label class="w-[100px] inline-block text-end mr-4" for="note">Note</label>
+
                 <input type="radio" value="1" id="note" name="note">
-                <label for="note">2</label>
+                <span>1</span>
                 <input type="radio" value="2" id="note" name="note">
-                <label for="note">3</label>
+                <span>2</span>
                 <input type="radio" value="3" id="note" name="note">
-                <label for="note">4</label>
+                <span>3</span>
                 <input type="radio" value="4" id="note" name="note">
-                <label for="note">5</label>
+                <span>4</span>
                 <input type="radio" value="5" id="note" name="note">
+                <span>5</span>
             </div>
             <button class="px-2 py-1 bg-blue-500 rounded inline-block mt-2 text-white">Noter</button>
         </form>
     </section>
 
     
-    <?php if (!empty($views)) { ?>
-        <section class="mb-6 border">
-            <h3 class="mb-4 bg-slate-200 pl-2 py-1">Les avis</h3>
 
             <?php foreach($views as $view) { ?>
-                <article>
+                <section class="mb-4">
                     <div class="flex">
-                        <div class="flex justify-center items-center">
-                            <div class="bg-yellow-400 flex justify-center items-center rounded-[50%] w-[50px] h-[50px] text-white text-lg ml-3 mr-8"><?= strtoupper(substr($view['name'], 0, 1)) ?></div>
+                        <div class="w-[100px]">
+                            <div class="bg-yellow-400 flex justify-center items-center rounded-[50%] w-[70px] h-[70px] text-white text-lg"><?= strtoupper(substr($view['name'], 0, 1)) ?></div>
                         </div>
-                        <div>
-                            <p><?= $view['name'] ?></p>
-                            <p>Note : <?= $view['note'] ?></p>
-                            <p><?= $view['message'] ?></p>
+                        <div class="w-full border rounded">
+                            <p class="bg-slate-200 pl-2 py-1"><?= $view['name'] ?></p>
+                            <div class="pl-2 pt-2 pb-4">
+                                <div><?= $view['note'] ?> / 5</div>
+                                <p><?= $view['message'] ?></p>
+                            </div>
+                            <p class="text-end bg-slate-200 pl-2 py-1 border"><?= dateToFrench($view['created_at'], 'l d F Y \à H\hi') ?></p>
                         </div>
                     </div>
-                    <p class="text-end"><?= $view['created_at'] ?></p>
-                </article>
+            </section>
             <?php } ?>
-        </section>
-    <?php } ?>
 
 </body>
 
